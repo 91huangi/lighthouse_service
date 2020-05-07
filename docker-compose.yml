@@ -7,6 +7,7 @@ services:
     volumes:
       - ./app/reports:/app/reports
       - ./app/classes:/app/classes
+      - ./app/ref:/app/ref
     environment:
       - FLASK_ENV=development
       - FLASK_APP=/app/api.py

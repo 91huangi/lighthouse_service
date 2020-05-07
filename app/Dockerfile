@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 ARG CACHEBUST=1
-RUN npm install -g lighthouse@next
+RUN npm install -g lighthouse
 
 
 COPY api.py /app/api.py
