@@ -3,11 +3,11 @@ FROM ubuntu:18.04
 RUN apt update -y && \
     apt install -y python3-pip python3
 
-RUN mkdir -p /api
+RUN mkdir -p /app
 
-COPY requirements.txt /api
+COPY requirements.txt /app
 
-WORKDIR /api
+WORKDIR /app
 
 RUN pip3 install -r requirements.txt
 
@@ -39,16 +39,8 @@ RUN apt-get update && apt-get install -y \
 ARG CACHEBUST=1
 RUN npm install -g lighthouse@next
 
-# Add Chrome as a user
-RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome \
-  && mkdir -p /home/chrome/reports && chown -R chrome:chrome /home/chrome
 
-# Run Chrome non-privileged
-USER chrome
-
-# CMD ["lighthouse", "http://18.222.118.221", "--output" ,"json", "--chrome-flags='--headless --disable-gpu --no-sandbox']
-
-COPY api.py /api/api.py
+COPY api.py /app/api.py
 
 ENTRYPOINT ["flask"]
 CMD ["run", "--host=0.0.0.0", "--port=9000"]

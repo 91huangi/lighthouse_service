@@ -5,10 +5,11 @@ services:
     image: lighthouse_service:app
     build: ./app
     volumes:
-      - ./app/reports:/api/reports
+      - ./app/reports:/app/reports
+      - ./app/classes:/app/classes
     environment:
       - FLASK_ENV=development
-      - FLASK_APP=/api/api.py
+      - FLASK_APP=/app/api.py
       - FLASK_DEBUG=1
       - LC_ALL=C.UTF-8
       - LANG=C.UTF-8
