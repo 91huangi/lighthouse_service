@@ -1,0 +1,10 @@
+version: '3.3'
+
+services:
+  app:
+    image: lighthouse_service:app
+    build: ./app
+    volumes:
+      - ./app/reports:/home/chrome/reports
+    ports:
+      - "9000:9000"
