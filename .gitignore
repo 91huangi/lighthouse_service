@@ -1,1 +1,2 @@
 app/reports/*.json
+__pycache__
