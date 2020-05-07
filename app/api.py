@@ -20,8 +20,5 @@ def lighthouse():
 
 @app.route('/lighthouse_results/<job_id>')
 def lighthouse_results(job_id):
-    lighthouse_status = throttler.place_in_line(job_id=job_id)
-    if lighthouse_status['place_in_line']:
-        return json.dumps(lighthouse_status)
-    results = throttler.fetch(job_id=job_id)
+    results = throttler.get_result(job_id=job_id)
     return json.dumps(results)
