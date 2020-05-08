@@ -104,7 +104,7 @@ class Controller:
             if not cat_weight:
                 continue
             category, weight = cat_weight
-            if v['score']:
+            if v['score'] is not None:
                 processed_results[category][k] = v['score']
                 processed_results[category]['sum'] += v['score']*weight
                 processed_results[category]['total'] += weight
