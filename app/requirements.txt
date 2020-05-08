@@ -1,5 +1,6 @@
 Flask
 Flask-Mail
+flask_cors
 mock
 mysql-connector
 werkzeug

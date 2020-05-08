@@ -24,7 +24,6 @@ class Controller:
         for line in lines[1::]:
             audit, cat, weight = line.split(',')
             self.lighthouse_mapping[audit] = [cat, float(weight)]
-        self.logger.info(self.lighthouse_mapping)
 
         self.queue = collections.deque()
         self.current_job = int()
@@ -69,13 +68,13 @@ class Controller:
 
     def dequeue(self):
         while True:
-            self.logger.info('dequeuing')
+            self.logger.debug('Dequeuing')
 
             if self.queue:
 
                 job_id, url = self.queue.popleft()
                 self.current_job = job_id
-                self.logger.info('dequeued {}'.format(job_id))
+                self.logger.info('Dequeued {}'.format(job_id))
 
                 try:
                     cmd = 'lighthouse {} --output json --quiet --chrome-flags="--headless --disable-gpu --no-sandbox"'.format(url)
