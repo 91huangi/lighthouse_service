@@ -16,3 +16,4 @@ services:
       - LANG=C.UTF-8
     ports:
       - "9000:9000"
+    network_mode: "host"
