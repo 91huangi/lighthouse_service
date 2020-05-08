@@ -15,8 +15,8 @@ controller = Controller(logger)
 @app.route('/lighthouse')
 def lighthouse():
     job_id = str(int(time.time()*1000))
-    controller.enqueue(job_id=job_id, url='http://18.222.118.221')
-    return job_id, 200
+    result = controller.enqueue(job_id=job_id, url='http://18.222.118.221')
+    return result, 200
 
 @app.route('/lighthouse_results/<job_id>')
 def lighthouse_results(job_id):

@@ -46,6 +46,7 @@ class Controller:
 
     def enqueue(self, job_id, url):
         self.queue.append((job_id, url))
+        return {'job_id': job_id}
 
     def place_in_line(self, job_id):
         place_in_line = 0
