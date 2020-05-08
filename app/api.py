@@ -19,6 +19,8 @@ controller = Controller(logger)
 def lighthouse():
     job_id = str(int(time.time()*1000))
     url = request.json['url']
+    if not url.startswith('http://') or not url.startswith('https://'):
+    	url = 'http://{}'.format(url)
     result = controller.enqueue(job_id=job_id, url=url)
     return result, 200
 
