@@ -12,6 +12,8 @@ LH_CATEGORIES = ['performance',
                  'accessibility',
                  'best-practices',
                  'seo']
+QUEUE_SIZE = 1
+
 
 class Controller:
 
@@ -37,15 +39,20 @@ class Controller:
         if place_in_line:
             return place_in_line
         if job_id == self.current_job:
-            return {'status': 'pending'}
+            return {'status': 'pending', 'job_id': job_id}
         results = self.fetch(job_id=job_id)
         if results:
             return results
-        return {'status': 'none'}
+        return {'status': 'none', 'job_id': job_id}
 
     def enqueue(self, job_id, url):
-        self.queue.append((job_id, url))
-        return {'job_id': job_id}
+        if len(self.queue) < QUEUE_SIZE:
+            self.queue.append((job_id, url))
+            result = {'status': 'enqueued', 'job_id': job_id}
+        else:
+            result = {'status': 'dropped', 'job_id': job_id}
+            self.results[job_id] = result
+        return result
 
     def place_in_line(self, job_id):
         place_in_line = 0
@@ -55,7 +62,7 @@ class Controller:
                 break
         result = dict()
         if place_in_line:
-            result = {'status': 'queued', 'place_in_line': place_in_line}
+            result = {'status': 'queued', 'job_id': job_id, 'place_in_line': place_in_line}
         return result
 
     def fetch(self, job_id):
@@ -82,9 +89,9 @@ class Controller:
                     lighthouse_result = self.process_result(raw_results=lighthouse_result)
                     with open('/app/reports/{}.json'.format(job_id), 'w') as file:
                         file.write(json.dumps(lighthouse_result))
-                    self.results[job_id] = {'status': 'complete', 'results': lighthouse_result}
+                    self.results[job_id] = {'status': 'complete', 'job_id': job_id, 'results': lighthouse_result}
                 except Exception as e:
-                    self.results[job_id] = {'status': 'error', 'message': str(e)}
+                    self.results[job_id] = {'status': 'error', 'job_id': job_id, 'message': str(e)}
 
                 self.current_job = int()
 
