@@ -12,7 +12,7 @@ LH_CATEGORIES = ['performance',
                  'accessibility',
                  'best-practices',
                  'seo']
-QUEUE_SIZE = 1
+QUEUE_SIZE = 10
 
 
 class Controller:
