@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 logger = logging.getLogger()
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 controller = Controller(logger)
 

@@ -46,12 +46,15 @@ class Controller:
         return {'status': 'none', 'job_id': job_id}
 
     def enqueue(self, job_id, url):
+
+        # Add new job to queue
         if len(self.queue) < QUEUE_SIZE:
             self.queue.append((job_id, url))
             result = {'status': 'enqueued', 'job_id': job_id}
         else:
             result = {'status': 'dropped', 'job_id': job_id}
             self.results[job_id] = result
+
         return result
 
     def place_in_line(self, job_id):
@@ -77,11 +80,11 @@ class Controller:
         while True:
             self.logger.debug('Dequeuing')
 
+            # Run next job
             if self.queue:
-
                 job_id, url = self.queue.popleft()
                 self.current_job = job_id
-                self.logger.info('Dequeued {}'.format(job_id))
+                self.logger.info('Dequeued job {}, url {}'.format(job_id, url))
 
                 try:
                     cmd = 'lighthouse {} --output json --quiet --chrome-flags="--headless --disable-gpu --no-sandbox"'.format(url)
@@ -94,6 +97,11 @@ class Controller:
                     self.results[job_id] = {'status': 'error', 'job_id': job_id, 'message': str(e)}
 
                 self.current_job = int()
+
+            # Also clean old results greater tha 60s
+            for k,v in self.results.items():
+                if time.time()*1000 - int(k) > 60*1000:
+                    del self.results[k]
 
             time.sleep(5)
 
