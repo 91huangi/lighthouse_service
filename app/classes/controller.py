@@ -53,7 +53,8 @@ class Controller:
             result = {'status': 'enqueued', 'job_id': job_id}
         else:
             result = {'status': 'dropped', 'job_id': job_id}
-            self.results[job_id] = result
+            results_id = (job_id % (60*1000)) // 1000
+            self.results[results_id] = result
 
         return result
 
@@ -70,9 +71,9 @@ class Controller:
 
     def fetch(self, job_id):
         results = dict()
-        if self.results[job_id]:
-            results = self.results[job_id]
-            del self.results[job_id]
+        results_id = (job_id % (60*1000)) // 1000
+        if self.results[results_id]:
+            results = self.results[results_id]
         return results
 
 
@@ -83,6 +84,11 @@ class Controller:
             # Run next job
             if self.queue:
                 job_id, url = self.queue.popleft()
+
+                # Results older than 60 seconds will be overwritten
+                results_id = (job_id % (60*1000)) // 1000
+                del self.results[results_id]
+
                 self.current_job = job_id
                 self.logger.info('Dequeued job {}, url {}'.format(job_id, url))
 
@@ -92,16 +98,11 @@ class Controller:
                     lighthouse_result = self.process_result(raw_results=lighthouse_result)
                     # with open('/app/reports/{}.json'.format(job_id), 'w') as file:
                     #     file.write(json.dumps(lighthouse_result))
-                    self.results[job_id] = {'status': 'complete', 'job_id': job_id, 'results': lighthouse_result}
+                    self.results[results_id] = {'status': 'complete', 'job_id': job_id, 'results': lighthouse_result}
                 except Exception as e:
-                    self.results[job_id] = {'status': 'error', 'job_id': job_id, 'message': str(e)}
+                    self.results[results_id] = {'status': 'error', 'job_id': job_id, 'message': str(e)}
 
                 self.current_job = int()
-
-            # Also clean old results greater tha 60s
-            for k,v in self.results.items():
-                if time.time()*1000 - int(k) > 60*1000:
-                    del self.results[k]
 
             time.sleep(5)
 
