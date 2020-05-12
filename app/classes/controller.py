@@ -87,8 +87,8 @@ class Controller:
                     cmd = 'lighthouse {} --output json --quiet --chrome-flags="--headless --disable-gpu --no-sandbox"'.format(url)
                     lighthouse_result = subprocess.check_output(cmd, shell=True).decode('utf-8')
                     lighthouse_result = self.process_result(raw_results=lighthouse_result)
-                    with open('/app/reports/{}.json'.format(job_id), 'w') as file:
-                        file.write(json.dumps(lighthouse_result))
+                    # with open('/app/reports/{}.json'.format(job_id), 'w') as file:
+                    #     file.write(json.dumps(lighthouse_result))
                     self.results[job_id] = {'status': 'complete', 'job_id': job_id, 'results': lighthouse_result}
                 except Exception as e:
                     self.results[job_id] = {'status': 'error', 'job_id': job_id, 'message': str(e)}
