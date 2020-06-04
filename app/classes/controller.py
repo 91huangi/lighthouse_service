@@ -53,7 +53,7 @@ class Controller:
             result = {'status': 'enqueued', 'job_id': job_id}
         else:
             result = {'status': 'dropped', 'job_id': job_id}
-            results_id = (job_id % (60*1000)) // 1000
+            results_id = (int(job_id) % (60*1000)) // 1000
             self.results[results_id] = result
 
         return result
@@ -71,7 +71,7 @@ class Controller:
 
     def fetch(self, job_id):
         results = dict()
-        results_id = (job_id % (60*1000)) // 1000
+        results_id = (int(job_id) % (60*1000)) // 1000
         if self.results[results_id]:
             results = self.results[results_id]
         return results
@@ -86,8 +86,8 @@ class Controller:
                 job_id, url = self.queue.popleft()
 
                 # Results older than 60 seconds will be overwritten
-                results_id = (job_id % (60*1000)) // 1000
-                del self.results[results_id]
+                results_id = (int(job_id) % (60*1000)) // 1000
+                self.results.pop(results_id, None)
 
                 self.current_job = job_id
                 self.logger.info('Dequeued job {}, url {}'.format(job_id, url))

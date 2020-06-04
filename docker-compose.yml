@@ -4,6 +4,7 @@ services:
   app:
     image: lighthouse_service:app
     build: ./app
+    restart: unless-stopped
     volumes:
       - ./app/reports:/app/reports
       - ./app/classes:/app/classes
