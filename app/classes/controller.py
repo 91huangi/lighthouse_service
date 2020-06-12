@@ -25,7 +25,7 @@ class Controller:
             lines = file.readlines()
         for line in lines[1::]:
             audit, cat, weight = line.split(',')
-            self.lighthouse_mapping[audit] = [cat, float(weight)]
+            self.lighthouse_mapping[audit] = [cat, float(weight.strip())]
 
         self.queue = collections.deque()
         self.current_job = int()
